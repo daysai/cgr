@@ -1,0 +1,35 @@
+{
+  "name": "cgr",
+  "version": "0.0.1",
+  "description": "YARN & NPM registry manager can help you easy and fast switch between different registries, now include: cnpm, taobao, nj(nodejitsu), rednpm, edunpm",
+  "bin": {
+    "cgr": "./cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/daysai/cgr.git"
+  },
+  "scripts": {
+    "star": "npm star cgr"
+  },
+  "keywords": [
+    "npm",
+    "yarn",
+    "registry"
+  ],
+  "author": "daysai",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/daysai/cgr/issues"
+  },
+  "homepage": "https://github.com/daysai/cgr",
+  "dependencies": {
+    "async": "^1.5.2",
+    "commander": "^2.9.0",
+    "extend": "^3.0.0",
+    "ini": "^1.1.0",
+    "node-echo": "^0.1.1",
+    "npm": "^5.0.0",
+    "request": "^2.72.0"
+  }
+}
