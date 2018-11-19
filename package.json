@@ -1,7 +1,7 @@
 {
   "name": "cgr",
   "version": "0.0.1",
-  "description": "YARN & NPM registry manager can help you easy and fast switch between different registries, now include: cnpm, taobao, nj(nodejitsu), rednpm, edunpm",
+  "description": "yarn & npm registry manager can help you easy and fast switch between different registries, now include: cnpm, taobao, nj(nodejitsu), rednpm, edunpm",
   "bin": {
     "cgr": "./cli.js"
   },
