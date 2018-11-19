@@ -1,7 +1,9 @@
 # cgr -- change registry | yarn & npm registry manager
 
+[![npm](https://img.shields.io/npm/v/cgr.svg)](https://www.npmjs.com/package/cgr)
+
 `cgr` can help you easy and fast switch between different npm or yarn registries,
-now include: `npm`, `cnpm`, `taobao`, `nj(nodejitsu)`, `rednpm`.
+now include: `npm`, `cnpm`, `taobao`.
 
 ## Install
 
@@ -19,9 +21,7 @@ $ cgr ls
   npm -----  https://registry.npmjs.org/
   cnpm ----  http://r.cnpmjs.org/
 * taobao --  https://registry.npm.taobao.org/
-  nj ------  https://registry.nodejitsu.com/
-  rednpm -- http://registry.mirror.cqupt.edu.cn
-  skimdb -- https://skimdb.npmjs.com/registry
+  npmMirror  https://skimdb.npmjs.com/registry/
 
 ```
 
@@ -33,9 +33,7 @@ $ cgr ls
 N npm -----  https://registry.npmjs.org/
   cnpm ----  http://r.cnpmjs.org/
 Y taobao --  https://registry.npm.taobao.org/
-  nj ------  https://registry.nodejitsu.com/
-  rednpm -- http://registry.mirror.cqupt.edu.cn
-  skimdb -- https://skimdb.npmjs.com/registry
+  npmMirror  https://skimdb.npmjs.com/registry/
 
 ```
 
@@ -78,9 +76,7 @@ Usage: cgr [options] [command]
 
 - [npm](https://www.npmjs.org)
 - [cnpm](http://cnpmjs.org)
-- [nodejitsu](https://www.nodejitsu.com)
 - [taobao](http://npm.taobao.org/)
-- [rednpm](http://npm.mirror.cqupt.edu.cn)
 
 ## Notice
 
