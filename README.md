@@ -1,4 +1,4 @@
-# cgr -- yarn & npm registry manager
+# cgr -- change registry | yarn & npm registry manager
 
 `cgr` can help you easy and fast switch between different npm or yarn registries,
 now include: `npm`, `cnpm`, `taobao`, `nj(nodejitsu)`, `rednpm`.

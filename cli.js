@@ -141,8 +141,8 @@ function onUse(name, type) {
 function onDel(name) {
   var customRegistries = getCustomRegistry();
   if (!customRegistries.hasOwnProperty(name)) return;
-  getCurrentRegistry(function(cur) {
-    if (cur === customRegistries[name].registry) {
+  getCurrentRegistry(function(curArr) {
+    if (curArr.indexOf(customRegistries[name].registry) !== -1) {
       onUse('npm');
     }
     delete customRegistries[name];
@@ -197,10 +197,14 @@ function onTest(registry) {
       });
     },
     function(err, results) {
-      getCurrentRegistry(function(cur) {
+      getCurrentRegistry(function(curArr) {
         var msg = [''];
         results.forEach(function(result) {
-          var prefix = result.registry === cur ? '* ' : '  ';
+          var prefixIndex = curArr.indexOf(item.registry);
+          var prefix =
+            prefixIndex === -1
+              ? '  '
+              : `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} `;
           var suffix = result.error ? 'Fetch Error' : result.time + 'ms';
           msg.push(prefix + result.name + line(result.name, 8) + suffix);
         });
