@@ -16,7 +16,7 @@
     "registry": "https://registry.yarnpkg.com/"
   },
   "npmMirror": {
-    "home": "https://skimdb.npmjs.com/",
+    "home": "https://skimdb.npmjs.com",
     "registry": "https://skimdb.npmjs.com/registry/"
   }
 }
