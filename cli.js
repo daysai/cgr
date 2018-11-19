@@ -200,7 +200,7 @@ function onTest(registry) {
       getCurrentRegistry(function(curArr) {
         var msg = [''];
         results.forEach(function(result) {
-          var prefixIndex = curArr.indexOf(item.registry);
+          var prefixIndex = curArr.indexOf(result.registry);
           var prefix =
             prefixIndex === -1
               ? '  '

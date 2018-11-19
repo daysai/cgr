@@ -65,7 +65,6 @@ Usage: cgr [options] [command]
     use <registry> [type]        Change registry to registry
     add <registry> <url> [home]  Add one custom registry
     del <registry>               Delete one custom registry
-    home <registry> [browser]    Open the homepage of registry with optional browser
     test [registry]              Show the response time for one or all registries
     help                         Print this help
 
