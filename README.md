@@ -40,22 +40,22 @@ Y taobao --  https://registry.npm.taobao.org/
 ```
 $ cgr use cnpm  //both switch registry to cnpm
 
-    npm Registry has been set to: http://r.cnpmjs.org/
-    yarn Registry has been set to: http://r.cnpmjs.org/
+    npm registry has been set to: http://r.cnpmjs.org/
+    yarn registry has been set to: http://r.cnpmjs.org/
 
 ```
 
 ```
 $ cgr use cnpm y  //yarn switch registry to cnpm
 
-    yarn Registry has been set to: http://r.cnpmjs.org/
+    yarn registry has been set to: http://r.cnpmjs.org/
 
 ```
 
 ```
 $ cgr use cnpm n  //npm switch registry to cnpm
 
-    npm Registry has been set to: http://r.cnpmjs.org/
+    npm registry has been set to: http://r.cnpmjs.org/
 
 ```
 

@@ -111,26 +111,26 @@ function onUse(name, type) {
         if (errN) {
           console.log(stderrN);
         } else {
-          printMsg(['', `   npm Registry has been set to: ${registry.registry}`]);
+          printMsg(['', `   npm registry has been set to: ${registry.registry}`]);
         }
         exec(`${setYarnR} ${registry.registry}`, function(errY, stdoutY, stderrY) {
           if (errN && errY) return exit(`${stderrN} ${stderrY}`);
           if (errY) {
             console.log(stderrY);
           } else {
-            printMsg([`   yarn Registry has been set to: ${registry.registry}`, '']);
+            printMsg([`   yarn registry has been set to: ${registry.registry}`, '']);
           }
         });
       });
     } else if (type.toLowerCase() === 'npm' || type.toLowerCase() === 'n') {
       exec(`${setNpmR} ${registry.registry}`, function(err, stdout, stderr) {
         if (err) return exit(stderr);
-        printMsg(['', `   npm Registry has been set to: ${registry.registry}`, '']);
+        printMsg(['', `   npm registry has been set to: ${registry.registry}`, '']);
       });
     } else if (type.toLowerCase() === 'yarn' || type.toLowerCase() === 'y') {
       exec(`${setYarnR} ${registry.registry}`, function(err, stdout, stderr) {
         if (err) return exit(stderr);
-        printMsg(['', `   yarn Registry has been set to: ${registry.registry}`, '']);
+        printMsg(['', `   yarn registry has been set to: ${registry.registry}`, '']);
       });
     } else {
       printMsg([
