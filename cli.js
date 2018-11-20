@@ -1,21 +1,24 @@
 #!/usr/bin/env node
-var path = require('path');
-var fs = require('fs');
-var program = require('commander');
-var ini = require('ini');
-var echo = require('node-echo');
-var extend = require('extend');
-var async = require('async');
-var request = require('request');
-var exec = require('child_process').exec;
-
-var registries = require('./registries.json');
-var PKG = require('./package.json');
-var CGRRC = path.join(process.env.HOME, '.cgrrc');
-var getNpmR = 'npm config get registry';
-var setNpmR = 'npm config set registry';
-var getYarnR = 'yarn config get registry';
-var setYarnR = 'yarn config set registry';
+var path = require('path'),
+  fs = require('fs'),
+  program = require('commander'),
+  ini = require('ini'),
+  echo = require('node-echo'),
+  extend = require('extend'),
+  async = require('async'),
+  request = require('request'),
+  exec = require('child_process').exec,
+  registries = require('./registries.json'),
+  PKG = require('./package.json'),
+  CGRRC = path.join(process.env.HOME, '.cgrrc'),
+  npmRe = {
+    get: 'npm config get registry',
+    set: 'npm config set registry'
+  },
+  yarnRe = {
+    get: 'yarn config get registry',
+    set: 'yarn config set registry'
+  };
 
 program.version(PKG.version);
 
@@ -66,16 +69,16 @@ if (process.argv.length === 2) {
 
 function onList() {
   getCurrentRegistry(function(curArr) {
-    var info = [''];
-    var allRegistries = getAllRegistry();
+    var info = [''],
+      allRegistries = getAllRegistry();
 
     Object.keys(allRegistries).forEach(function(key) {
-      var item = allRegistries[key];
-      var prefixIndex = curArr.indexOf(item.registry);
-      var prefix =
-        prefixIndex === -1
-          ? '  '
-          : `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} `;
+      var item = allRegistries[key],
+        prefixIndex = curArr.indexOf(item.registry),
+        prefix =
+          prefixIndex === -1
+            ? '  '
+            : `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} `;
       info.push(prefix + key + line(key, 8) + item.registry);
     });
 
@@ -86,12 +89,12 @@ function onList() {
 
 function showCurrent() {
   getCurrentRegistry(function(curArr) {
-    var info = [''];
-    var allRegistries = getAllRegistry();
+    var info = [''],
+      allRegistries = getAllRegistry();
 
     Object.keys(allRegistries).forEach(function(key) {
-      var item = allRegistries[key];
-      var prefixIndex = curArr.indexOf(item.registry);
+      var item = allRegistries[key],
+        prefixIndex = curArr.indexOf(item.registry);
       if (prefixIndex !== -1) {
         info.push(`${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} ${key}`);
       }
@@ -107,13 +110,13 @@ function onUse(name, type) {
   if (allRegistries.hasOwnProperty(name)) {
     var registry = allRegistries[name];
     if (!type) {
-      exec(`${setNpmR} ${registry.registry}`, function(errN, stdoutN, stderrN) {
+      exec(`${npmRe.set} ${registry.registry}`, function(errN, stdoutN, stderrN) {
         if (errN) {
           console.log(stderrN);
         } else {
           printMsg(['', `   npm registry has been set to: ${registry.registry}`]);
         }
-        exec(`${setYarnR} ${registry.registry}`, function(errY, stdoutY, stderrY) {
+        exec(`${yarnRe.set} ${registry.registry}`, function(errY, stdoutY, stderrY) {
           if (errN && errY) return exit(`${stderrN} ${stderrY}`);
           if (errY) {
             console.log(stderrY);
@@ -123,12 +126,12 @@ function onUse(name, type) {
         });
       });
     } else if (type.toLowerCase() === 'npm' || type.toLowerCase() === 'n') {
-      exec(`${setNpmR} ${registry.registry}`, function(err, stdout, stderr) {
+      exec(`${npmRe.set} ${registry.registry}`, function(err, stdout, stderr) {
         if (err) return exit(stderr);
         printMsg(['', `   npm registry has been set to: ${registry.registry}`, '']);
       });
     } else if (type.toLowerCase() === 'yarn' || type.toLowerCase() === 'y') {
-      exec(`${setYarnR} ${registry.registry}`, function(err, stdout, stderr) {
+      exec(`${yarnRe.set} ${registry.registry}`, function(err, stdout, stderr) {
         if (err) return exit(stderr);
         printMsg(['', `   yarn registry has been set to: ${registry.registry}`, '']);
       });
@@ -176,9 +179,8 @@ function onAdd(name, url, home) {
 }
 
 function onTest(registry) {
-  var allRegistries = getAllRegistry();
-
-  var toTest;
+  var allRegistries = getAllRegistry(),
+    toTest;
 
   if (registry) {
     if (!allRegistries.hasOwnProperty(registry)) {
@@ -192,8 +194,8 @@ function onTest(registry) {
   async.map(
     Object.keys(toTest),
     function(name, cbk) {
-      var registry = toTest[name];
-      var start = +new Date();
+      var registry = toTest[name],
+        start = +new Date();
       request(registry.registry + 'pedding', function(error) {
         cbk(null, {
           name: name,
@@ -207,12 +209,12 @@ function onTest(registry) {
       getCurrentRegistry(function(curArr) {
         var msg = [''];
         results.forEach(function(result) {
-          var prefixIndex = curArr.indexOf(result.registry);
-          var prefix =
-            prefixIndex === -1
-              ? '  '
-              : `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} `;
-          var suffix = result.error ? 'Fetch Error' : result.time + 'ms';
+          var prefixIndex = curArr.indexOf(result.registry),
+            prefix =
+              prefixIndex === -1
+                ? '  '
+                : `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} `,
+            suffix = result.error ? 'Fetch Error' : result.time + 'ms';
           msg.push(prefix + result.name + line(result.name, 8) + suffix);
         });
         msg.push('');
@@ -228,9 +230,9 @@ function onTest(registry) {
  * get current registry
  */
 function getCurrentRegistry(cbk) {
-  exec(getNpmR, function(errN, stdoutN, stderrN) {
+  exec(npmRe.get, function(errN, stdoutN, stderrN) {
     if (errN) console.log(stderrN);
-    exec(getYarnR, function(errY, stdoutY, stderrY) {
+    exec(yarnRe.get, function(errY, stdoutY, stderrY) {
       if (errN && errY) return exit(`${stderrN} ${stderrY}`);
       if (errY) console.log(stderrY);
       if (stdoutN.trim() === stdoutY.trim()) {
