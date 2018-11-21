@@ -13,10 +13,8 @@ $ npm install -g cgr
 
 ## Example
 
-npm registry is the same as yarn registry, \* for both
-
 ```
-$ cgr ls
+$ cgr ls  //* for both
 
   npm -----  https://registry.npmjs.org/
   cnpm ----  http://r.cnpmjs.org/
@@ -25,10 +23,8 @@ $ cgr ls
 
 ```
 
-npm registry is different from yarn registry, N for npm, Y for yarn
-
 ```
-$ cgr ls
+$ cgr ls  //N for npm, Y for yarn
 
 N npm -----  https://registry.npmjs.org/
   cnpm ----  http://r.cnpmjs.org/
