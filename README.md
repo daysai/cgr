@@ -3,7 +3,7 @@
 [![npm](https://img.shields.io/npm/v/cgr.svg)](https://www.npmjs.com/package/cgr)
 
 `cgr` can help you easy and fast switch between different npm or yarn registries,
-now include: `npm`, `cnpm`, `taobao`, `npmMirror`, `yarn`.
+now include: `npm`, `cnpm`, `taobao`, `yarn`.
 
 ## Install
 
@@ -16,20 +16,20 @@ $ npm install -g cgr
 ```
 $ cgr ls  //* for both
 
-  npm -----  https://registry.npmjs.org/
-  cnpm ----  http://r.cnpmjs.org/
-* taobao --  https://registry.npm.taobao.org/
-  npmMirror  https://skimdb.npmjs.com/registry/
+  npm ---- https://registry.npmjs.org/
+  cnpm --- http://r.cnpmjs.org/
+* taobao - https://registry.npm.taobao.org/
+  yarn --- https://registry.yarnpkg.com/
 
 ```
 
 ```
 $ cgr ls  //N for npm, Y for yarn
 
-N npm -----  https://registry.npmjs.org/
-  cnpm ----  http://r.cnpmjs.org/
-Y taobao --  https://registry.npm.taobao.org/
-  npmMirror  https://skimdb.npmjs.com/registry/
+N npm ---- https://registry.npmjs.org/
+  cnpm --- http://r.cnpmjs.org/
+Y taobao - https://registry.npm.taobao.org/
+  yarn --- https://registry.yarnpkg.com/
 
 ```
 
@@ -81,7 +81,6 @@ Usage: cgr [options] [command]
 - [cnpm](http://cnpmjs.org)
 - [taobao](http://npm.taobao.org)
 - [yarn](https://yarnpkg.com)
-- [npmMirror](https://skimdb.npmjs.com)
 
 ## Notice
 
