@@ -108,40 +108,42 @@ function showCurrent() {
 function onUse(name, type) {
   var allRegistries = getAllRegistry();
   if (allRegistries.hasOwnProperty(name)) {
-    var registry = allRegistries[name];
+    var registry = allRegistries[name],
+      info = [''];
     if (!type) {
       exec(`${npmRe.set} ${registry.registry}`, function(errN, stdoutN, stderrN) {
-        if (errN) {
-          console.log(stderrN);
-        } else {
-          printMsg(['', `   npm registry has been set to: ${registry.registry}`]);
-        }
         exec(`${yarnRe.set} ${registry.registry}`, function(errY, stdoutY, stderrY) {
-          if (errN && errY) return exit(`${stderrN} ${stderrY}`);
-          if (errY) {
-            console.log(stderrY);
-          } else {
-            printMsg([`   yarn registry has been set to: ${registry.registry}`, '']);
-          }
+          if (errN && errY) return exit([stderrN, stderrY]);
+          if (errN) info.push(stderrN);
+          if (errY) info.push(stderrY);
+          if (!errN) info.push(`   npm registry has been set to: ${registry.registry}`);
+          if (!errY) info.push(`   yarn registry has been set to: ${registry.registry}`);
+          info.push('');
+          printMsg(info);
         });
       });
-    } else if (type.toLowerCase() === 'npm' || type.toLowerCase() === 'n') {
-      exec(`${npmRe.set} ${registry.registry}`, function(err, stdout, stderr) {
-        if (err) return exit(stderr);
-        printMsg(['', `   npm registry has been set to: ${registry.registry}`, '']);
-      });
-    } else if (type.toLowerCase() === 'yarn' || type.toLowerCase() === 'y') {
-      exec(`${yarnRe.set} ${registry.registry}`, function(err, stdout, stderr) {
-        if (err) return exit(stderr);
-        printMsg(['', `   yarn registry has been set to: ${registry.registry}`, '']);
-      });
     } else {
-      printMsg([
-        '',
-        '   cgr use <registry> [type]',
-        '   type must be oneOf yarn | y | npm | n',
-        ''
-      ]);
+      var smType = type.toLowerCase();
+      if (smType === 'npm' || smType === 'n') {
+        exec(`${npmRe.set} ${registry.registry}`, function(err, stdout, stderr) {
+          if (err) return exit([stderr]);
+          info.push(`   npm registry has been set to: ${registry.registry}`);
+          info.push('');
+          printMsg(info);
+        });
+      } else if (smType === 'yarn' || smType === 'y') {
+        exec(`${yarnRe.set} ${registry.registry}`, function(err, stdout, stderr) {
+          if (err) return exit([stderr]);
+          info.push(`   yarn registry has been set to: ${registry.registry}`);
+          info.push('');
+          printMsg(info);
+        });
+      } else {
+        info.push('   cgr use <registry> [type]');
+        info.push('   type must be oneOf yarn | y | npm | n');
+        info.push('');
+        printMsg(info);
+      }
     }
   } else {
     printMsg(['', '   Not find registry: ' + name, '']);
@@ -157,7 +159,7 @@ function onDel(name) {
     }
     delete customRegistries[name];
     setCustomRegistry(customRegistries, function(err) {
-      if (err) return exit(err);
+      if (err) return exit([err]);
       printMsg(['', '    delete registry ' + name + ' success', '']);
     });
   });
@@ -173,7 +175,7 @@ function onAdd(name, url, home) {
     config.home = home;
   }
   setCustomRegistry(customRegistries, function(err) {
-    if (err) return exit(err);
+    if (err) return exit([err]);
     printMsg(['', '    add registry ' + name + ' success', '']);
   });
 }
@@ -231,9 +233,9 @@ function onTest(registry) {
  */
 function getCurrentRegistry(cbk) {
   exec(npmRe.get, function(errN, stdoutN, stderrN) {
-    if (errN) console.log(stderrN);
     exec(yarnRe.get, function(errY, stdoutY, stderrY) {
-      if (errN && errY) return exit(`${stderrN} ${stderrY}`);
+      if (errN && errY) return exit([stderrN, stderrY]);
+      if (errN) console.log(stderrN);
       if (errY) console.log(stderrY);
       if (stdoutN.trim() === stdoutY.trim()) {
         cbk([stdoutN.trim()]);
@@ -256,10 +258,6 @@ function getAllRegistry() {
   return extend({}, registries, getCustomRegistry());
 }
 
-function printErr(err) {
-  console.error('an error occured: ' + err);
-}
-
 function printMsg(infos) {
   infos.forEach(function(info) {
     console.log(info);
@@ -269,8 +267,8 @@ function printMsg(infos) {
 /*
  * print message & exit
  */
-function exit(err) {
-  printErr(err);
+function exit(errs) {
+  printMsg(errs);
   process.exit(1);
 }
 
