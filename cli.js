@@ -74,12 +74,16 @@ function onList() {
 
     Object.keys(allRegistries).forEach(function(key) {
       var item = allRegistries[key],
-        prefixIndex = curArr.indexOf(item.registry),
+        registry = String(item.registry),
+        prefixIndex = curArr.indexOf(registry),
+        sePrefixIndex = curArr.indexOf(registry.substring(0, registry.length - 1)),
         prefix =
           prefixIndex === -1
-            ? '  '
+            ? sePrefixIndex === -1
+              ? '  '
+              : `${curArr.length === 1 ? '*' : sePrefixIndex === 0 ? 'N' : 'Y'} `
             : `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} `;
-      info.push(prefix + key + line(key, 8) + item.registry);
+      info.push(prefix + key + line(key, 8) + registry);
     });
 
     info.push('');
@@ -94,9 +98,23 @@ function showCurrent() {
 
     Object.keys(allRegistries).forEach(function(key) {
       var item = allRegistries[key],
-        prefixIndex = curArr.indexOf(item.registry);
+        registry = String(item.registry),
+        prefixIndex = curArr.indexOf(registry),
+        sePrefixIndex = curArr.indexOf(registry.substring(0, registry.length - 1));
       if (prefixIndex !== -1) {
-        info.push(`${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} ${key}`);
+        info.push(
+          `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} ${key} ${line(
+            key,
+            8
+          )} ${registry}`
+        );
+      } else if (sePrefixIndex !== -1) {
+        info.push(
+          `${curArr.length === 1 ? '*' : sePrefixIndex === 0 ? 'N' : 'Y'} ${key} ${line(
+            key,
+            8
+          )} ${registry}`
+        );
       }
     });
 
@@ -211,10 +229,14 @@ function onTest(registry) {
       getCurrentRegistry(function(curArr) {
         var msg = [''];
         results.forEach(function(result) {
-          var prefixIndex = curArr.indexOf(result.registry),
+          var registry = String(result.registry),
+            prefixIndex = curArr.indexOf(registry),
+            sePrefixIndex = curArr.indexOf(registry.substring(0, registry.length - 1)),
             prefix =
               prefixIndex === -1
-                ? '  '
+                ? sePrefixIndex === -1
+                  ? '  '
+                  : `${curArr.length === 1 ? '*' : sePrefixIndex === 0 ? 'N' : 'Y'} `
                 : `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} `,
             suffix = result.error ? 'Fetch Error' : result.time + 'ms';
           msg.push(prefix + result.name + line(result.name, 8) + suffix);
