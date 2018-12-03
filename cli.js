@@ -103,17 +103,17 @@ function showCurrent() {
         sePrefixIndex = curArr.indexOf(registry.substring(0, registry.length - 1));
       if (prefixIndex !== -1) {
         info.push(
-          `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} ${key} ${line(
+          `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} ${key}${line(
             key,
             8
-          )} ${registry}`
+          )}${registry}`
         );
       } else if (sePrefixIndex !== -1) {
         info.push(
-          `${curArr.length === 1 ? '*' : sePrefixIndex === 0 ? 'N' : 'Y'} ${key} ${line(
+          `${curArr.length === 1 ? '*' : sePrefixIndex === 0 ? 'N' : 'Y'} ${key}${line(
             key,
             8
-          )} ${registry}`
+          )}${registry}`
         );
       }
     });
