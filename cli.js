@@ -3,7 +3,6 @@ var path = require('path'),
   fs = require('fs'),
   program = require('commander'),
   ini = require('ini'),
-  echo = require('node-echo'),
   extend = require('extend'),
   async = require('async'),
   request = require('request'),
@@ -273,7 +272,7 @@ function getCustomRegistry() {
 }
 
 function setCustomRegistry(config, cbk) {
-  echo(ini.stringify(config), '>', CGRRC, cbk);
+  fs.writeFile(CGRRC, ini.stringify(config), 'utf-8', cbk);
 }
 
 function getAllRegistry() {
