@@ -1,23 +1,28 @@
 #!/usr/bin/env node
+
 var path = require('path'),
   fs = require('fs'),
   program = require('commander'),
   ini = require('ini'),
   extend = require('extend'),
   async = require('async'),
-  request = require('request'),
-  exec = require('child_process').exec,
-  registries = require('./registries.json'),
-  PKG = require('./package.json'),
-  CGRRC = path.join(process.env.HOME, '.cgrrc'),
-  npmRe = {
-    get: 'npm config get registry',
-    set: 'npm config set registry'
-  },
-  yarnRe = {
-    get: 'yarn config get registry',
-    set: 'yarn config set registry'
-  };
+    request = require('request'),
+    exec = require('child_process').exec,
+    registries = require('./registries.json'),
+    PKG = require('./package.json'),
+    CGRRC = path.join(process.env.HOME, '.cgrrc'),
+    npmRe = {
+      get: 'npm config get registry',
+      set: 'npm config set registry'
+    },
+    yarnRe = {
+      get: 'yarn config get registry',
+      set: 'yarn config set registry'
+    },
+    pnpmRe = {
+      get: 'pnpm config get registry',
+      set: 'pnpm config set registry'
+    };
 
 program.version(PKG.version);
 
@@ -54,7 +59,7 @@ program
 program
   .command('help')
   .description('Print this help')
-  .action(function() {
+  .action(function () {
     program.outputHelp();
   });
 
@@ -67,7 +72,7 @@ if (process.argv.length === 2) {
 /*//////////////// cmd methods /////////////////*/
 
 function onList() {
-  getCurrentRegistry(function(curArr) {
+  getCurrentRegistry(function (curArr) {
     var info = [''],
       allRegistries = getAllRegistry();
 
@@ -77,8 +82,8 @@ function onList() {
         prefixIndex = curArr.indexOf(registry),
         prefix =
           prefixIndex === -1
-            ? '  '
-            : `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} `;
+            ? '    '
+            : `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N/P' : 'Y  '} `;
       info.push(prefix + key + line(key, 8) + registry);
     });
 
@@ -88,17 +93,17 @@ function onList() {
 }
 
 function showCurrent() {
-  getCurrentRegistry(function(curArr) {
+  getCurrentRegistry(function (curArr) {
     var info = [''],
       allRegistries = getAllRegistry();
 
-    Object.keys(allRegistries).forEach(function(key) {
+    Object.keys(allRegistries).forEach(function (key) {
       var item = allRegistries[key],
         registry = String(item.registry),
         prefixIndex = curArr.indexOf(registry);
       if (prefixIndex !== -1) {
         info.push(
-          `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} ${key}${line(
+          `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N/P' : 'Y  '} ${key}${line(
             key,
             8
           )}${registry}`
@@ -117,36 +122,47 @@ function onUse(name, type) {
     var registry = allRegistries[name],
       info = [''];
     if (!type) {
-      exec(`${npmRe.set} ${registry.registry}`, function(errN, stdoutN, stderrN) {
-        exec(`${yarnRe.set} ${registry.registry}`, function(errY, stdoutY, stderrY) {
-          if (errN && errY) return exit([stderrN, stderrY]);
-          if (errN) info.push(stderrN);
-          if (errY) info.push(stderrY);
-          if (!errN) info.push(`   npm registry has been set to: ${registry.registry}`);
-          if (!errY) info.push(`   yarn registry has been set to: ${registry.registry}`);
-          info.push('');
-          printMsg(info);
+      exec(`${npmRe.set} ${registry.registry}`, function (errN, stdoutN, stderrN) {
+        exec(`${yarnRe.set} ${registry.registry}`, function (errY, stdoutY, stderrY) {
+          exec(`${pnpmRe.set} ${registry.registry}`, function (errP, stdoutP, stderrP) {
+            if (errN && errY) return exit([stderrN, stderrY]);
+            if (errN) info.push(stderrN);
+            if (errY) info.push(stderrY);
+            if (!errN) info.push(`   npm registry has been set to: ${registry.registry}`);
+            if (!errY) info.push(`   yarn registry has been set to: ${registry.registry}`);
+            if (!errP) info.push(`   pnpm registry has been set to: ${registry.registry}`);
+
+            info.push('');
+            printMsg(info);
+          })
         });
       });
     } else {
       var smType = type.toLowerCase();
-      if (smType === 'npm' || smType === 'n') {
-        exec(`${npmRe.set} ${registry.registry}`, function(err, stdout, stderr) {
+      if (smType === 'npm' || smType === 'N/P') {
+        exec(`${npmRe.set} ${registry.registry}`, function (err, stdout, stderr) {
           if (err) return exit([stderr]);
           info.push(`   npm registry has been set to: ${registry.registry}`);
           info.push('');
           printMsg(info);
         });
-      } else if (smType === 'yarn' || smType === 'y') {
-        exec(`${yarnRe.set} ${registry.registry}`, function(err, stdout, stderr) {
+      } else if (smType === 'yarn' || smType === 'Y  ') {
+        exec(`${yarnRe.set} ${registry.registry}`, function (err, stdout, stderr) {
           if (err) return exit([stderr]);
           info.push(`   yarn registry has been set to: ${registry.registry}`);
           info.push('');
           printMsg(info);
         });
+      } else if (smType === 'pnpm' || smType === 'p') {
+        exec(`${pnpmRe.set} ${registry.registry}`, function (err, stdout, stderr) {
+          if (err) return exit([stderr]);
+          info.push(`   pnpm registry has been set to: ${registry.registry}`);
+          info.push('');
+          printMsg(info);
+        });
       } else {
         info.push('   cgr use <registry> [type]');
-        info.push('   type must be oneOf yarn | y | npm | n');
+        info.push('   type must be oneOf yarn | y | npm | n | pnpm | p');
         info.push('');
         printMsg(info);
       }
@@ -159,12 +175,12 @@ function onUse(name, type) {
 function onDel(name) {
   var customRegistries = getCustomRegistry();
   if (!customRegistries.hasOwnProperty(name)) return;
-  getCurrentRegistry(function(curArr) {
+  getCurrentRegistry(function (curArr) {
     if (curArr.indexOf(customRegistries[name].registry) !== -1) {
       onUse('npm');
     }
     delete customRegistries[name];
-    setCustomRegistry(customRegistries, function(err) {
+    setCustomRegistry(customRegistries, function (err) {
       if (err) return exit([err]);
       printMsg(['', '    delete registry ' + name + ' success', '']);
     });
@@ -180,7 +196,7 @@ function onAdd(name, url, home) {
   if (home) {
     config.home = home;
   }
-  setCustomRegistry(customRegistries, function(err) {
+  setCustomRegistry(customRegistries, function (err) {
     if (err) return exit([err]);
     printMsg(['', '    add registry ' + name + ' success', '']);
   });
@@ -194,17 +210,19 @@ function onTest(registry) {
     if (!allRegistries.hasOwnProperty(registry)) {
       return;
     }
-    toTest = { [registry]: allRegistries[registry] };
+    toTest = {
+      [registry]: allRegistries[registry]
+    };
   } else {
     toTest = allRegistries;
   }
 
   async.map(
     Object.keys(toTest),
-    function(name, cbk) {
+    function (name, cbk) {
       var registry = toTest[name],
         start = +new Date();
-      request(registry.registry + 'pedding', function(error) {
+      request(registry.registry + 'pedding', function (error) {
         cbk(null, {
           name: name,
           registry: registry.registry,
@@ -213,16 +231,16 @@ function onTest(registry) {
         });
       });
     },
-    function(err, results) {
-      getCurrentRegistry(function(curArr) {
+    function (err, results) {
+      getCurrentRegistry(function (curArr) {
         var msg = [''];
-        results.forEach(function(result) {
+        results.forEach(function (result) {
           var registry = String(result.registry),
             prefixIndex = curArr.indexOf(registry),
             prefix =
-              prefixIndex === -1
-                ? '  '
-                : `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N' : 'Y'} `,
+            prefixIndex === -1 ?
+            '    ' :
+            `${curArr.length === 1 ? '*' : prefixIndex === 0 ? 'N/P' : 'Y  '} `,
             suffix = result.error ? 'Fetch Error' : result.time + 'ms';
           msg.push(prefix + result.name + line(result.name, 8) + suffix);
         });
@@ -239,24 +257,32 @@ function onTest(registry) {
  * get current registry
  */
 function getCurrentRegistry(cbk) {
-  exec(npmRe.get, function(errN, stdoutN, stderrN) {
-    exec(yarnRe.get, function(errY, stdoutY, stderrY) {
-      if (errN && errY) return exit([stderrN, stderrY]);
-      if (errN) console.log(stderrN);
-      if (errY) console.log(stderrY);
-      var npmRegistry = stdoutN.trim(),
-        yarnRegistry = stdoutY.trim();
-      if (npmRegistry[npmRegistry.length - 1] !== '/') {
-        npmRegistry = npmRegistry + '/';
-      }
-      if (yarnRegistry[yarnRegistry.length - 1] !== '/') {
-        yarnRegistry = yarnRegistry + '/';
-      }
-      if (npmRegistry === yarnRegistry) {
-        cbk([npmRegistry]);
-      } else {
-        cbk([npmRegistry, yarnRegistry]);
-      }
+  exec(npmRe.get, function (errN, stdoutN, stderrN) {
+    exec(yarnRe.get, function (errY, stdoutY, stderrY) {
+      exec(pnpmRe.get, function (errP, stdoutP, stderrP) {
+        if (errN && errY && errP) return exit([stderrN, stderrY, stderrP]);
+        if (errN) console.log(stderrN);
+        if (errY) console.log(stderrY);
+        if (errP) console.log(stderrP);
+        var npmRegistry = stdoutN.trim(),
+          yarnRegistry = stdoutY.trim(),
+          pnpmRegistry = stdoutP.trim();
+        if (npmRegistry[npmRegistry.length - 1] !== '/') {
+          npmRegistry = npmRegistry + '/';
+        }
+        if (yarnRegistry[yarnRegistry.length - 1] !== '/') {
+          yarnRegistry = yarnRegistry + '/';
+        }
+        if (pnpmRegistry[pnpmRegistry.length - 1] !== '/') {
+          pnpmRegistry = pnpmRegistry + '/';
+        }
+        if (npmRegistry === yarnRegistry && npmRegistry === pnpmRegistry && yarnRegistry === pnpmRegistry) {
+          cbk([npmRegistry])
+        } else if (npmRegistry === pnpmRegistry) {
+          cbk([npmRegistry, yarnRegistry])
+        }
+
+      })
     });
   });
 }
@@ -274,7 +300,7 @@ function getAllRegistry() {
 }
 
 function printMsg(infos) {
-  infos.forEach(function(info) {
+  infos.forEach(function (info) {
     console.log(info);
   });
 }
