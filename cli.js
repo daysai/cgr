@@ -117,15 +117,14 @@ function onUse(name, type) {
   var allRegistries = getAllRegistry();
   if (allRegistries.hasOwnProperty(name)) {
     var registry = allRegistries[name],
-      info = [''];
+      info = [''],
+      registrySet = 'registry has been set to:';
     if (!type) {
       exec(`${npmRe.set} ${registry.registry}`, function (errN, stdoutN, stderrN) {
         exec(`${yarnRe.set} ${registry.registry}`, function (errY, stdoutY, stderrY) {
           if (errN && errY) return exit([stderrN, stderrY]);
-          if (errN) info.push(stderrN);
-          if (errY) info.push(stderrY);
-          if (!errN) info.push(`   npm registry has been set to: ${registry.registry}`);
-          if (!errY) info.push(`   yarn registry has been set to: ${registry.registry}`);
+          info.push(errN ? stderrN : `   npm ${registrySet} ${registry.registry}`);
+          info.push(errY ? stderrY : `   yarn ${registrySet} ${registry.registry}`);
           info.push('');
           printMsg(info);
         });
@@ -135,14 +134,14 @@ function onUse(name, type) {
       if (smType === 'npm' || smType === 'n') {
         exec(`${npmRe.set} ${registry.registry}`, function (err, stdout, stderr) {
           if (err) return exit([stderr]);
-          info.push(`   npm registry has been set to: ${registry.registry}`);
+          info.push(`   npm ${registrySet} ${registry.registry}`);
           info.push('');
           printMsg(info);
         });
       } else if (smType === 'yarn' || smType === 'y') {
         exec(`${yarnRe.set} ${registry.registry}`, function (err, stdout, stderr) {
           if (err) return exit([stderr]);
-          info.push(`   yarn registry has been set to: ${registry.registry}`);
+          info.push(`   yarn ${registrySet} ${registry.registry}`);
           info.push('');
           printMsg(info);
         });
