@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const os = require('os');
 const path = require('path');
 const fs = require('fs');
 const program = require('commander');
@@ -10,7 +11,7 @@ const request = require('request');
 const exec = require('child_process').exec;
 const registries = require('./registries.json');
 const PKG = require('./package.json');
-const HOME = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+const HOME = os.homedir();
 const CGRRC = path.join(HOME, '.cgrrc');
 const npmRe = {
   get: 'npm config get registry',
