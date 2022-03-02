@@ -1,6 +1,8 @@
 # cgr -- change registry | yarn & npm registry manager
 
 [![npm](https://img.shields.io/npm/v/cgr.svg)](https://www.npmjs.com/package/cgr)
+[![NPM downloads](http://img.shields.io/npm/dm/cgr.svg?style=flat)](https://npmjs.org/package/cgr)
+[![dependency Status](https://snyk.io/test/npm/cgr/badge.svg?style=flat-square)](https://snyk.io/test/npm/cgr)
 
 `cgr` can help you easy and fast switch between different npm or yarn registries,
 now include: `npm`, `cnpm`, `taobao`, `yarn`.
