@@ -18,7 +18,7 @@ $ cgr ls  //* for both
 
   npm ---- https://registry.npmjs.org/
   cnpm --- http://r.cnpmjs.org/
-* taobao - https://registry.npm.taobao.org/
+* taobao - https://registry.npmmirror.com/
   yarn --- https://registry.yarnpkg.com/
 
 ```
@@ -28,7 +28,7 @@ $ cgr ls  //N for npm, Y for yarn
 
 N npm ---- https://registry.npmjs.org/
   cnpm --- http://r.cnpmjs.org/
-Y taobao - https://registry.npm.taobao.org/
+Y taobao - https://registry.npmmirror.com/
   yarn --- https://registry.yarnpkg.com/
 
 ```
@@ -79,7 +79,7 @@ Usage: cgr [options] [command]
 
 - [npm](https://www.npmjs.org)
 - [cnpm](http://cnpmjs.org)
-- [taobao](http://npm.taobao.org)
+- [taobao](https://npmmirror.com)
 - [yarn](https://yarnpkg.com)
 
 ## Notice
