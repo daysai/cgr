@@ -8,8 +8,9 @@
     "registry": "http://r.cnpmjs.org/"
   },
   "taobao": {
-    "home": "https://npmmirror.com/",
+    "home": "https://npmmirror.com",
     "registry": "https://registry.npmmirror.com/"
+  },
   "yarn": {
     "home": "https://yarnpkg.com",
     "registry": "https://registry.yarnpkg.com/"
