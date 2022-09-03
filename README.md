@@ -26,7 +26,7 @@ $ cgr ls  //* for both
 ```
 
 ```
-$ cgr ls  //N for npm, Y for yarn
+$ cgr ls  //N for npm, Y for yarn, P for pnpm
 
 N npm ---- https://registry.npmjs.org/
   cnpm --- http://r.cnpmjs.org/
@@ -57,6 +57,27 @@ $ cgr use cnpm n  //npm switch registry to cnpm
 
 ```
 
+```
+$ cgr on pnpm  //enable pnpm switch registry
+
+    cgr enable pnpm success
+
+```
+
+```
+$ cgr off pnpm  //disable pnpm switch registry
+
+    cgr disable pnpm success
+
+```
+
+```
+$ cgr use cnpm p  //pnpm switch registry to cnpm
+
+    pnpm registry has been set to: http://r.cnpmjs.org/
+
+```
+
 ## Usage
 
 ```
@@ -69,6 +90,8 @@ Usage: cgr [options] [command]
     add <registry> <url> [home]  Add one custom registry
     del <registry>               Delete one custom registry
     test [registry]              Show the response time for one or all registries
+    on [type]                    Enable pnpm or other type
+    off [type]                   Disable pnpm or other type
     help                         Print this help
 
   Options:
